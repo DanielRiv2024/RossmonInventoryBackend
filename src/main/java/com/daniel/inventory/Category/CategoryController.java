@@ -52,14 +52,23 @@ public class CategoryController {
 
     @DeleteMapping("/delete/{categoryId}")
     public ResponseEntity<String> deleteCategory(@PathVariable int categoryId) {
-
-        try {
-            int status = categoryService.deleteCategory(categoryId);
-            return ResponseEntity.ok("Categoría eliminada exitosamente");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al eliminar la categoría");
+        System.out.println("Iniciando eliminación de categoría con ID: " + categoryId);
+        
+        int status = categoryService.deleteCategory(categoryId);
+    
+        System.out.println("Resultado de la eliminación: " + status);
+    
+        if (status == 1) {
+            return ResponseEntity.ok("Categoria eliminada exitosamente");
+        } else if (status == 0) {
+            return ResponseEntity.badRequest().body("No se pudo eliminar la categoria (ID no encontrado)");
+        } else {
+            return ResponseEntity.badRequest().body("Error al eliminar la categoria");
         }
     }
+
+    
+
 
     @GetMapping("/getAll")
     public ResponseEntity<List<Category>> getAllCategories() {

@@ -94,11 +94,16 @@ public class CategoryService {
         try {
             StoredProcedureQuery storedProcedure = entityManager.createStoredProcedureQuery("DeleteCategory");
             storedProcedure.registerStoredProcedureParameter("categoryId", Integer.class, ParameterMode.IN);
+            storedProcedure.registerStoredProcedureParameter("status", Integer.class, ParameterMode.OUT); // Registrar
+                                                                                                          // el
+                                                                                                          // parámetro
+                                                                                                          // de salida
+                                                                                                          // 'status'
             storedProcedure.setParameter("categoryId", categoryId);
             storedProcedure.execute();
 
-            Object result = storedProcedure.getOutputParameterValue("status");
-            return result != null ? (int) result : -1;
+            int status = (int) storedProcedure.getOutputParameterValue("status");
+            return status;
         } catch (Exception e) {
             e.printStackTrace();
             return -1;
