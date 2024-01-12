@@ -22,40 +22,34 @@ public class ProductService {
         this.entityManager = entityManager;
         this.productRepository = productRepository;
     }
-
     @Transactional
     public void createProduct(Product product) {
         try {
             StoredProcedureQuery storedProcedure = entityManager.createStoredProcedureQuery("InsertProduct");
-            storedProcedure.registerStoredProcedureParameter("productName", String.class, ParameterMode.IN);
-            storedProcedure.registerStoredProcedureParameter("price", Integer.class, ParameterMode.IN);
-            storedProcedure.registerStoredProcedureParameter("amount", Integer.class, ParameterMode.IN);
-            storedProcedure.registerStoredProcedureParameter("categoryId", Integer.class, ParameterMode.IN);
-            storedProcedure.registerStoredProcedureParameter("createdBy", Integer.class, ParameterMode.IN);
-            storedProcedure.registerStoredProcedureParameter("updateBy", Integer.class, ParameterMode.IN);
-            storedProcedure.registerStoredProcedureParameter("status", Integer.class, ParameterMode.OUT);
-
-            storedProcedure.setParameter("productName", product.getName());
-            storedProcedure.setParameter("price", product.getPrice());
-            storedProcedure.setParameter("amount", product.getAmount());
-            storedProcedure.setParameter("categoryId", product.getCategory());
-            storedProcedure.setParameter("createdBy", product.getCreatedBy());
-            storedProcedure.setParameter("updateBy", product.getUpdateBy());
-
+            storedProcedure.registerStoredProcedureParameter("nombre", String.class, ParameterMode.IN);
+            storedProcedure.registerStoredProcedureParameter("precio", Integer.class, ParameterMode.IN);
+            storedProcedure.registerStoredProcedureParameter("cantidad", Integer.class, ParameterMode.IN);
+            storedProcedure.registerStoredProcedureParameter("categoria", Integer.class, ParameterMode.IN);
+            storedProcedure.registerStoredProcedureParameter("creadoPor", Integer.class, ParameterMode.IN);
+            storedProcedure.registerStoredProcedureParameter("actualizadoPor", Integer.class, ParameterMode.IN);
+    
+            storedProcedure.setParameter("nombre", product.getName());
+            storedProcedure.setParameter("precio", product.getPrice());
+            storedProcedure.setParameter("cantidad", product.getAmount());
+            storedProcedure.setParameter("categoria", product.getCategory());
+            storedProcedure.setParameter("creadoPor", product.getCreatedBy());
+            storedProcedure.setParameter("actualizadoPor", product.getUpdateBy());
+    
             storedProcedure.execute();
-
-            Integer status = (Integer) storedProcedure.getOutputParameterValue("status");
-
-            if (status != null && status == 1) {
-                System.out.println("Producto creado exitosamente");
-            } else {
-                System.out.println("Error al crear el producto");
-            }
+    
+            System.out.println("Producto creado exitosamente");
+    
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Error al crear el producto: " + e.getMessage());
         }
     }
+    
 
     @Transactional
     public boolean updateProduct(Product product) {

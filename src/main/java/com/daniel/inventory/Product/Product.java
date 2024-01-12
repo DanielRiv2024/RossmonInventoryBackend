@@ -30,7 +30,7 @@ public class Product {
     private int amount;
 
     @Column(name = "ID_CATEGORY")
-    private int category;
+    private Integer category;
 
     @Column(name = "CREATED_BY")
     private int createdBy;
@@ -41,7 +41,7 @@ public class Product {
     public Product() {
     }
 
-    public Product(int id, String name, int price, int amount, int category, int createdBy, int updateBy) {
+    public Product(int id, String name, int price, int amount, Integer category, int createdBy, int updateBy) {
         this.id = id;
         this.name = name;
         this.price = price;
