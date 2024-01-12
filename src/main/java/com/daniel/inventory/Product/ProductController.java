@@ -54,7 +54,6 @@ public ResponseEntity<String> createProduct(@RequestBody Product product) {
             return ResponseEntity.badRequest().body("Error al eliminar el producto");
         }
     }
-
     @GetMapping("/getAll")
     public ResponseEntity<List<Product>> getAllProducts() {
         List<Product> products = productService.getAllProducts();

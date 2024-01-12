@@ -8,6 +8,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.daniel.inventory.Jwt.JwtAuthenticationFilter;
 
@@ -22,25 +24,33 @@ public class SecurityConfig {
     private final AuthenticationProvider authProvider;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception
-    {
-        return http
-            .csrf(csrf -> 
-                csrf
-                .disable())
-            .authorizeHttpRequests(authRequest ->
-              authRequest
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .cors().and() // Habilitar soporte CORS
+            .csrf().disable()
+            .authorizeHttpRequests(authRequest -> authRequest
                 .requestMatchers("/auth/**").permitAll()
-                .anyRequest().authenticated()
-                )
-            .sessionManagement(sessionManager->
-                sessionManager 
-                  .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .anyRequest().authenticated())
+            .sessionManagement(sessionManager -> sessionManager
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authenticationProvider(authProvider)
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-            .build();
-            
-            
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
+    }
+
+     @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**")
+                    .allowedOrigins("http://localhost:4200") // o tus dominios específicos
+                    .allowedMethods("GET", "POST", "PUT", "DELETE")
+                    .allowedHeaders("*")
+                    .allowCredentials(true);
+            }
+        };
     }
 
 }
